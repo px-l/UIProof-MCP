@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:3000",
+  "viewport": { "width": 1440, "height": 900 },
+  "threshold": 0.1,
+  "maxDiffRatio": 0.001,
+  "states": [{ "name": "default", "baseline": "design.png" }]
+}

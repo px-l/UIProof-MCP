@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "UIProof": {
+      "command": "node",
+      "args": [
+        "/absolute/path/UIProof-MCP/dist/mcp.js",
+        "--root",
+        "/absolute/path/acceptance"
+      ]
+    }
+  }
+}
