@@ -42,6 +42,7 @@ export interface Run {
   status: "passed" | "failed" | "error";
   startedAt: string;
   sourceRevision?: string;
+  clientContext?: { taskId: string; prototypeId: string; tree: string };
   config: Config;
   states: StateResult[];
   analysis?: unknown;

@@ -4,7 +4,7 @@
 
 UIProof 是独立运行的视觉验收工具，面向产品经理、前端开发和 AI 编码客户端。先用 CLI 验证一张设计图，再让 MCP 客户端读取局部证据、定位代码、修复后复验。工作台和业务仓库无需引入本项目源代码。
 
-当前版本：`0.1.0`，本地 stdio MCP。尚未发布 npm 包或部署远程服务。
+当前版本：`0.1.0`，本地 stdio MCP。尚未发布 npm 包；支持独立服务器的 SSH stdio 部署，见 [部署说明](docs/deployment.md)。
 
 ## 快速体验
 
@@ -64,6 +64,8 @@ node /absolute/path/UIProof-MCP/dist/cli.js run --root /absolute/path/acceptance
 
 | 工具                   | 用途                                           |
 | ---------------------- | ---------------------------------------------- |
+| `uiproof_verify_image` | 接收已批准图片与上下文，启动远端验收           |
+| `uiproof_report`       | 获取图片内嵌的可下载 HTML 报告                 |
 | `uiproof_run`          | 读取配置启动验收，立即返回 `jobId`             |
 | `uiproof_status`       | 查询任务；完成后获得 `runId` 或导入/分析结果   |
 | `uiproof_runs`         | 列出持久化运行记录，支持服务重启后找回         |

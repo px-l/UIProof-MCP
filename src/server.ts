@@ -7,6 +7,7 @@ import { importFigma, figmaInput } from "./figma.js";
 import { analyze } from "./analysis.js";
 import { confined, loadConfig } from "./config.js";
 import { readRun, runProof, recheck, listRuns } from "./runner.js";
+import { remoteInput, verifyImage, portableReport } from "./remote.js";
 const id = z.string().uuid();
 const text = (value: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }],
@@ -91,6 +92,7 @@ export function createServer(root: string) {
       return text({
         id: run.id,
         status: run.status,
+        clientContext: run.clientContext,
         report: path.join(dir, "index.html"),
         states: run.states.map(({ issues, design, ...s }) => ({
           ...s,
@@ -202,6 +204,27 @@ export function createServer(root: string) {
       annotations: { readOnlyHint: true },
     },
     async ({ limit }) => text(await listRuns(root, limit)),
+  );
+  server.registerTool(
+    "uiproof_verify_image",
+    {
+      description:
+        "Accept an approved reference image and target URL from an authenticated client, store an isolated input and start visual acceptance. Returns jobId. Context binds the result to a task/prototype/code tree.",
+      inputSchema: remoteInput.shape,
+    },
+    async (input) =>
+      start(async () => ({ runId: (await verifyImage(root, input)).id })),
+  );
+  server.registerTool(
+    "uiproof_report",
+    {
+      description:
+        "Read a self-contained HTML report with embedded local image evidence for an existing run.",
+      inputSchema: { runId: id },
+      annotations: { readOnlyHint: true },
+    },
+    async ({ runId }) =>
+      text({ runId, html: await portableReport(root, runId) }),
   );
   server.registerPrompt(
     "uiproof_repair",

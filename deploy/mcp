@@ -1,0 +1,3 @@
+#!/bin/sh
+# Called over authenticated SSH; MCP traffic is stdin/stdout only.
+exec docker exec -i --user node uiproof node /app/dist/mcp.js --root /data/workbench
