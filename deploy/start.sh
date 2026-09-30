@@ -7,7 +7,9 @@ if docker container inspect uiproof >/dev/null 2>&1; then
   echo 'Container uiproof already exists. Stop/rename it deliberately before replacing.' >&2
   exit 1
 fi
-install -d -o 1000 -g 1000 -m 700 /var/lib/uiproof/workbench
+mkdir -p /var/lib/uiproof/workbench
+chown 1000:1000 /var/lib/uiproof/workbench
+chmod 700 /var/lib/uiproof/workbench
 install -d -m 755 /opt/uiproof/bin
 install -m 755 "$(dirname "$0")/mcp" /opt/uiproof/bin/mcp
 docker run -d --name uiproof --restart unless-stopped --init \
