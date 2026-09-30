@@ -28,6 +28,7 @@ export async function persist(dir:string,run:Run) {
   await writeFile(path.join(dir,'index.html'),report(run));
 }
 export async function runProof(root:string,input:Config):Promise<Run> {
+  root=await realpath(root);
   const config=configSchema.parse(input),id=randomUUID(),dir=path.join(await outputRoot(root),id);
   await mkdir(dir);
   const run:Run={version:1,id,status:'error',startedAt:new Date().toISOString(),config,states:[]};
@@ -56,12 +57,13 @@ export async function runProof(root:string,input:Config):Promise<Run> {
       }
       const overlay=Buffer.from(`<svg width="${config.viewport.width}" height="${config.viewport.height}">${boxes.map((b,i)=>`<rect x="${b.x+1}" y="${b.y+1}" width="${Math.max(1,b.width-2)}" height="${Math.max(1,b.height-2)}" fill="#ef444422" stroke="#ef4444" stroke-width="2"/><text x="${b.x+4}" y="${b.y+14}" fill="#a00" font-size="12">${i+1}</text>`).join('')}</svg>`);
       await sharp(diff.actual).composite([{input:overlay}]).png().toFile(path.join(out,'annotated.png'));
-    } catch(error) {result.error=error instanceof Error?error.message:String(error);}
+    } catch(error) {result.status='error';result.error=error instanceof Error?error.message:String(error);}
   }
   run.status=run.states.some(s=>s.status==='error')?'error':run.states.some(s=>s.status==='failed')?'failed':'passed';
   await persist(dir,run);return run;
 }
 export async function recheck(root:string,id:string) {
+  root=await realpath(root);
   const {run:previous,dir}=await readRun(root,id);
   if(previous.states.some(s=>!s.baselineHash)) throw new Error('Previous run has no complete baseline snapshots');
   const config=structuredClone(previous.config);

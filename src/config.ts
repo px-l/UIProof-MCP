@@ -35,6 +35,7 @@ export async function confined(root: string, file: string): Promise<string> {
   return resolved;
 }
 export async function loadConfig(root: string, file: string): Promise<Config> {
+  root = await realpath(root);
   const filename = await confined(root, file);
   const value = configSchema.parse(JSON.parse(await readFile(filename, 'utf8')));
   for (const s of value.states) s.baseline = path.relative(root, await confined(root, path.resolve(path.dirname(filename), s.baseline)));
