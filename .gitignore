@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.uiproof/
+.env
+.env.*
+!.env.example
+*.log
